@@ -51,7 +51,74 @@ Alternatively, copy the ZIP onto a USB flash drive and connect it via USB OTG.
 
 ---
 
-## ⚡ Step 3: Flashing the ADos Package
+## 🧹 How to Completely Delete the Current OS & Install Fresh (NO TERMUX)
+
+> [!IMPORTANT]
+> **NO TERMUX REQUIRED:** ADos does NOT use Termux. Termux runs as an unprivileged Android user app in a restricted sandbox. ADos is a **native system-level OS installation** with full root access, kernel injection, and native NetHunter terminal.
+
+Follow these steps to completely wipe your current stock phone OS and install the clean cybersecurity OS from scratch:
+
+### 1. Boot into Custom Recovery (TWRP or OrangeFox)
+- Power off your phone completely.
+- Press and hold your recovery key combination:
+  - **Samsung (S9/S10/Note9/Note10):** Hold **Volume Up + Bixby + Power**
+  - **Samsung (S20/A52/modern):** Connect to PC via USB cable, hold **Volume Up + Power**
+  - **Google Pixel / Xiaomi / OnePlus:** Hold **Volume Down + Power** (or **Volume Up + Power**)
+
+### 2. Completely Format & Delete the Existing OS
+1. In TWRP, tap **Wipe**.
+2. Tap **Format Data** → Type `yes` and press Enter. *(This decrypts the partition and wipes old user locks).*
+3. Go back to **Wipe** → Tap **Advanced Wipe**.
+4. Check the following partitions to **completely delete the existing OS**:
+   - ✅ **Dalvik / ART Cache**
+   - ✅ **Cache**
+   - ✅ **System** *(This purges the current Samsung / Android OS entirely)*
+   - ✅ **Vendor** *(Purges old manufacturer framework files)*
+   - ✅ **Data**
+   > [!CAUTION]
+   > Do **NOT** check *Internal Storage* or *MicroSD / USB OTG* if your install zips are saved there.
+5. Swipe the slider: **Swipe to Wipe**.
+6. Your old OS is now completely erased from the phone.
+
+---
+
+### 3. Flash the New Clean System Image & ADos
+There are two ways to flash the fresh OS:
+
+#### Method 1: Using USB OTG or MicroSD Card (Recommended)
+1. In TWRP, tap **Install**.
+2. Tap **Select Storage** → Choose **Micro SD card** or **USB OTG**.
+3. **Flash Clean Base ROM:** Select your clean AOSP / LineageOS / NetHunter Base ROM zip → **Swipe to confirm flash**.
+4. **Flash Root:** Select `Magisk.zip` (or KernelSU) → **Swipe to confirm flash**.
+5. **Flash ADos:** Select `ADos-[device]-android[version]-[rootfs]-twrp.zip` → **Swipe to confirm flash**.
+6. Tap **Reboot System**.
+
+#### Method 2: ADB Sideload from PC (If phone storage is wiped)
+If your phone storage is empty, flash directly from your computer terminal over USB:
+1. In TWRP, go to **Advanced** → **ADB Sideload** → Swipe to start sideload.
+2. On your PC terminal, run:
+   ```bash
+   # 1. Sideload Base OS (e.g. LineageOS)
+   adb sideload lineage-os-base.zip
+
+   # 2. Sideload Root
+   adb sideload Magisk-v27.0.zip
+
+   # 3. Sideload ADos
+   adb sideload output/ADos-samsung_s10-android11-minimal-twrp.zip
+   ```
+3. Tap **Reboot System** on your phone.
+
+---
+
+### 4. First Boot & Native Zero-Termux Operation
+1. The phone will boot into the fresh, lightweight system.
+2. Complete the initial basic setup (skip Google account setup for maximum privacy).
+3. Open the pre-installed **NetHunter App** (granted root automatically by Magisk).
+4. Open the pre-installed **NetHunter Terminal** (native Kali shell with full root `/dev/` access, zero Termux needed).
+5. All tools (`nmap`, `metasploit`, `aircrack-ng`, `wireshark`, `kex`) run natively through the Kali chroot!
+
+---
 
 ### Method A: Flashing via TWRP / OrangeFox Recovery (Recommended)
 1. Turn off your phone.
