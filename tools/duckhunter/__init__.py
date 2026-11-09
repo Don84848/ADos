@@ -1,0 +1,1 @@
+"""DuckHunter BadUSB HID Compiler"""

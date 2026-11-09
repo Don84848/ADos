@@ -1,0 +1,17 @@
+REM ========================================================
+REM ADos DuckHunter Payload: Fast Windows Command Runner
+REM Author: ADos Security Team
+REM Description: Launches cmd as administrator and executes recon
+REM ========================================================
+DELAY 1000
+GUI r
+DELAY 300
+STRING cmd
+ENTER
+DELAY 500
+STRING whoami /all
+ENTER
+STRING ipconfig /all
+ENTER
+STRING netstat -ano
+ENTER

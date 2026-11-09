@@ -1,0 +1,52 @@
+{
+  "description": "ADos External Wireless Adapter Firmware Manifest",
+  "firmware_directory": "/system/etc/firmware",
+  "adapters": {
+    "ath9k_htc": {
+      "chipset": "Atheros AR9271 / AR7010",
+      "driver": "ath9k_htc",
+      "firmware_files": [
+        "htc_9271.fw",
+        "htc_7010.fw"
+      ],
+      "capabilities": ["monitor_mode", "packet_injection", "ap_mode"],
+      "recommended_hardware": [
+        "TP-Link TL-WN722N v1",
+        "Alfa AWUS036NHA"
+      ],
+      "download_url": "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/plain/ath9k_htc/htc_9271.fw"
+    },
+    "rtl8812au": {
+      "chipset": "Realtek RTL8812AU / RTL8814AU",
+      "driver": "8812au",
+      "capabilities": ["dual_band_5ghz", "monitor_mode", "packet_injection"],
+      "recommended_hardware": [
+        "Alfa AWUS036ACH",
+        "Alfa AWUS036ACM"
+      ],
+      "firmware_files": [
+        "rtlwifi/rtl8812aufw.bin"
+      ]
+    },
+    "rt2800usb": {
+      "chipset": "Ralink RT3070 / RT2870",
+      "driver": "rt2800usb",
+      "firmware_files": [
+        "rt2870.bin"
+      ],
+      "capabilities": ["monitor_mode", "packet_injection"],
+      "recommended_hardware": [
+        "Alfa AWUS036NH",
+        "Panda PAU05"
+      ]
+    },
+    "mt7601u": {
+      "chipset": "MediaTek MT7601U",
+      "driver": "mt7601u",
+      "firmware_files": [
+        "mt7601u.bin"
+      ],
+      "capabilities": ["station_mode", "ap_mode"]
+    }
+  }
+}

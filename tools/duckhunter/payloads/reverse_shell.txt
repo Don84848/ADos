@@ -1,0 +1,9 @@
+REM ========================================================
+REM ADos DuckHunter Payload: PowerShell Remote Task Runner
+REM Target: Windows 10/11
+REM ========================================================
+DELAY 1200
+GUI r
+DELAY 400
+STRING powershell -WindowStyle Hidden -Command "$ip='192.168.1.100'; $port=4444; Write-Host Connecting to $ip:$port"
+ENTER
