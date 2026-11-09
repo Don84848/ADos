@@ -7,6 +7,16 @@
 
 ---
 
+## Ecosystem
+
+| Component | Repo | Description |
+|-----------|------|-------------|
+| **ADos** (this repo) | [Public](https://github.com/Don84848/ADos) | Mobile OS builder & orchestrator |
+| **ADos-Manager** | [Private](https://github.com/Don84848/ADos-Manager) | Android APK + PC desktop app |
+
+> **ADos-Manager** is the companion app suite: install on your phone for a touch-friendly dashboard, or run on your PC for the full desktop security studio.
+
+
 ## 🚀 Overview
 
 **ADos** consolidates the entire **Kali NetHunter** mobile ecosystem into a single, unified open-source repository and automated build system. 
