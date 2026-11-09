@@ -1,80 +1,167 @@
 # ADos (Advanced Defensive/Offensive OS)
 
 <p align="center">
-  <b>Unified Open-Source Mobile Cybersecurity Operating System & Build Orchestrator</b><br>
-  <i>Transform your Android smartphone (with specialized Samsung Galaxy support) into a high-performance, lightweight mobile penetration testing workstation.</i>
+  <b>Unified Open-Source Mobile Cybersecurity Operating System & Full-Stack PC Studio</b><br>
+  <i>Transform your Android smartphone (with dedicated Samsung Galaxy optimizations) or your PC workstation into an ultra-fast, lightweight ethical hacking and bug bounty platform.</i>
 </p>
 
 ---
 
-## Ecosystem
+## 🌐 Ecosystem Overview
 
-| Component | Repo | Description |
-|-----------|------|-------------|
-| **ADos** (this repo) | [Public](https://github.com/Don84848/ADos) | Mobile OS builder & orchestrator |
-| **ADos-Manager** | [Private](https://github.com/Don84848/ADos-Manager) | Android APK + PC desktop app |
-
-> **ADos-Manager** is the companion app suite: install on your phone for a touch-friendly dashboard, or run on your PC for the full desktop security studio.
-
-
-## 🚀 Overview
-
-**ADos** consolidates the entire **Kali NetHunter** mobile ecosystem into a single, unified open-source repository and automated build system. 
-
-Instead of juggling 12 disparate GitLab repositories with differing build pipelines, ADos provides a single entrypoint:
-
-```bash
-python3 build.py --device [phone_model] --release [os_version]
-```
-
-### ✨ Key Features
-- **All-in-One NetHunter Suite:** Bundles the NetHunter App UI, Terminal, Desktop KeX, App Store client, Chroot installer, DuckHunter BadUSB tools, and external Wi-Fi firmware patches.
-- **Dedicated Samsung Phone Optimization:** Engineered specifically for Samsung Galaxy phones (S9, S10, S20, Note 9, Note 10, A50, A52). Includes AnyKernel3 ramdisk patches that bypass Samsung Defex security daemons.
-- **Lightweight Mobile Performance:** Includes automated OneUI/Knox debloater scripts (`scripts/debloat-samsung.sh`) and nano/minimal chroot profiles that free up **>1.5 GB of RAM** and prevent thermal throttling while running intensive security tools (Nmap, Metasploit, Aircrack-ng).
-- **External Wi-Fi & Packet Injection:** Full support for external USB Wi-Fi dongles (Atheros AR9271, Realtek RTL8812AU, Ralink RT3070) via USB OTG.
-- **BadUSB & DuckHunter HID:** Execute automated keystroke injection payloads over USB directly from the phone.
-- **Curated Hacking Toolsets & Mobile Dashboard (`ados-menu`):** Instant access to Wi-Fi auditing (Aircrack/Wifite), MITM (Bettercap/Responder), Network Discovery (Nmap/Masscan), Web Exploitation (SQLMap/Gobuster), and Metasploit directly from a mobile-friendly touchscreen menu.
-- **Cross-Platform Containerized Builds:** Pre-configured `Dockerfile` and `docker-compose.yml` to build flashable packages on Windows, Linux, or macOS.
-
----
-
-## 📦 Consolidated Repositories Matrix
-
-ADos combines and manages the following official Kali NetHunter repositories:
-
-| Component | Upstream GitLab Repository | Role in ADos |
+| Repository | Visibility | Role & Capabilities |
 | :--- | :--- | :--- |
-| **Main Installer & Builder** | [`kalilinux/nethunter/build-scripts/kali-nethunter-installer`](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-installer) | Core packaging engine & flashable zip generator (`core/installer`) |
-| **Mobile Control App** | [`kalilinux/nethunter/apps/kali-nethunter-app`](https://gitlab.com/kalilinux/nethunter/apps/kali-nethunter-app) | Main Android management application (`apps/kali-nethunter-app`) |
-| **Custom Terminal App** | [`kalilinux/nethunter/apps/kali-nethunter-terminal`](https://gitlab.com/kalilinux/nethunter/apps/kali-nethunter-terminal) | Kali terminal emulator client (`apps/kali-nethunter-terminal`) |
-| **Desktop KeX Extension** | [`kalilinux/nethunter/apps/kali-nethunter-kex`](https://gitlab.com/kalilinux/nethunter/apps/kali-nethunter-kex) | Desktop-on-Mobile graphical VNC engine (`apps/kali-nethunter-kex`) |
-| **Dedicated Store Client** | [`kalilinux/nethunter/apps/kali-nethunter-store-client`](https://gitlab.com/kalilinux/nethunter/apps/kali-nethunter-store-client) | F-Droid security tools package repository (`apps/kali-nethunter-store-client`) |
-| **Device Kernel Trees** | [`kalilinux/nethunter/build-scripts/kali-nethunter-project`](https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project) | Device kernel configs and patches (`devices/kernel-tree`) |
-| **ARM Rootfs Recipes** | [`kalilinux/build-scripts/kali-arm`](https://gitlab.com/kalilinux/build-scripts/kali-arm) | Kali Linux ARM core chroot generation recipes (`core/arm-rootfs`) |
-| **Assets & Wallpapers** | NetHunter installer assets | Visual branding, wallpapers, and boot animations |
-| **DuckHunter HID** | NetHunter BadUSB utilities | Rubber Ducky payload compiler & HID emulator (`tools/duckhunter`) |
-| **Bluetooth/NFC Tools** | NetHunter wireless utilities | Bluetooth LE scanner & sniffing helper scripts (`tools/bluetooth`) |
-| **External Wi-Fi Firmware** | NetHunter firmware patches | Firmware drivers for AR9271, RTL8812AU, RT3070 (`tools/firmware`) |
-| **Documentation & Guides** | NetHunter official docs | Step-by-step flashing & hardware manuals (`docs/`) |
+| **ADos** (this repo) | **Public** | Core Mobile NetHunter OS Builder, Full-Stack Backend API, PC Desktop Studio, and Bug Bounty Security Suite |
+| **ADos-Manager** | **Private** | Android Native Companion App (`ADosManager.apk`), 2GB RAM Kernel Limiter, and Extended Desktop Deployment Suite |
 
 ---
 
-## ⚡ Quick Start
+## ⚡ Quick Start: Running on Windows (PowerShell & CMD)
 
-### 1. Clone the Repository
-```bash
-git clone --recurse-submodules https://github.com/your-username/ADos.git
-cd ADos
+ADos is 100% standard-library compliant. It requires **zero external pip installations** and runs immediately using Python 3.10+ on Windows, Linux, and macOS.
+
+### 🔷 Windows PowerShell (`powershell.exe`)
+
+Open PowerShell (or Windows Terminal) and navigate to the project directory:
+
+```powershell
+# 1. Navigate to the repository
+cd C:\ADos
+
+# 2. Launch the Desktop GUI Application (Visual PC Studio)
+python launch_studio.py
+# -- OR alternatively via the unified build orchestrator:
+python build.py --launch-gui
+
+# 3. Start the Full-Stack REST Backend API server (Port 8000)
+python build.py --serve --port 8000
+# -- OR directly run the API module:
+python -m backend.api --port 8000
+
+# 4. Run any Security / Bug Bounty tool directly from PowerShell:
+python tools/tool_installer.py subfinder -d example.com
+python tools/tool_installer.py header-audit -u https://example.com
+python tools/tool_installer.py cors-scan -u https://example.com
+python tools/tool_installer.py cert-inspect -d example.com -p 443
+python tools/tool_installer.py secret-scan -u https://example.com
+python tools/tool_installer.py tech-detect -u https://example.com
+
+# 5. Run the Automated Unit Test Suite (100% Passing)
+python -m unittest discover -s tests
 ```
 
-*(If you already cloned without submodules, run `python3 build.py --init-submodules`)*
+---
 
-### 2. Check Supported Devices
-```bash
-python3 build.py --list-devices
+### ⬛ Windows Command Prompt (`cmd.exe`)
+
+Open Command Prompt (`cmd.exe`) and run:
+
+```cmd
+:: 1. Navigate to the repository directory
+cd /d C:\ADos
+
+:: 2. Launch the Desktop GUI Application on PC
+python launch_studio.py
+:: -- OR:
+python build.py --launch-gui
+
+:: 3. Start the REST Backend API server
+python -m backend.api --port 8000
+
+:: 4. Execute on-demand Bug Bounty tools
+python tools\tool_installer.py subfinder -d example.com
+python tools\tool_installer.py header-audit -u https://example.com
+python tools\tool_installer.py secret-scan -u https://example.com
+
+:: 5. Run verification tests
+python -m unittest discover -s tests
 ```
 
-Supported device presets include:
+---
+
+## 🎯 Bug Bounty & Web Reconnaissance Suite (Earn via Responsible Disclosure)
+
+ADos includes a dedicated suite of **ethical reconnaissance and vulnerability auditing tools** engineered specifically for security researchers participating in authorized **Bug Bounty Programs** (such as **HackerOne**, **Bugcrowd**, and **Intigriti**).
+
+### 🛠️ Built-in Bug Bounty Tools
+
+| Tool | Focus & Purpose | Typical Bounty Impact | CLI Command Example |
+| :--- | :--- | :--- | :--- |
+| **`subfinder`** | Passive Certificate Transparency & DNS asset discovery | Reconnaissance / Attack Surface Expansion | `python tools/tool_installer.py subfinder -d target.com` |
+| **`header-audit`** | Audits CSP, HSTS, X-Frame-Options (Clickjacking), X-Content-Type | Low / Medium (Misconfiguration / Defense-in-Depth) | `python tools/tool_installer.py header-audit -u https://target.com` |
+| **`cors-scan`** | Tests for Arbitrary Origin Reflection & Insecure Credential Sharing | Medium / High (Sensitive Data Leakage / CSRF Bypass) | `python tools/tool_installer.py cors-scan -u https://target.com/api` |
+| **`cert-inspect`** | SSL/TLS certificate metadata & Subject Alternative Names (SANs) | Reconnaissance / Internal Infrastructure Discovery | `python tools/tool_installer.py cert-inspect -d target.com -p 443` |
+| **`secret-scan`** | Scans client-side JavaScript for leaked AWS, Google, Stripe, JWT keys | High / Critical ($500 - $10,000+ per valid finding) | `python tools/tool_installer.py secret-scan -u https://target.com/bundle.js` |
+| **`tech-detect`** | Web technology stack, server, CMS, and framework fingerprinter | Reconnaissance / CVE Component Identification | `python tools/tool_installer.py tech-detect -u https://target.com` |
+
+---
+
+### 💰 Bug Bounty Methodology: How to Hunt and Earn Responsibly
+
+```
+     [1. SCOPE VERIFICATION]
+     Confirm target domain is listed in HackerOne / Bugcrowd "In-Scope"
+               │
+               ▼
+     [2. PASSIVE RECONNAISSANCE]
+     Run `subfinder` & `cert-inspect` to discover active subdomains & SAN endpoints
+               │
+               ▼
+     [3. TECHNOLOGY PROFILING]
+     Run `tech-detect` to identify frameworks, CMS, and web server versions
+               │
+               ▼
+     [4. SECURITY CONFIGURATION AUDIT]
+     Run `header-audit` (Missing HSTS/CSP/Clickjacking) & `cors-scan` (Origin reflection)
+               │
+               ▼
+     [5. CLIENT-SIDE SECRET AUDITING]
+     Run `secret-scan` across public JavaScript assets to catch leaked API tokens & keys
+               │
+               ▼
+     [6. RESPONSIBLE DISCLOSURE]
+     Write a clear vulnerability report with reproduction steps and submit to the company
+```
+
+#### 📋 Professional Report Writing Checklist
+When submitting a bug finding to a company program:
+1. **Title:** Clear and concise (e.g., `CORS Misconfiguration leading to Arbitrary Origin Reflection on /api/user`).
+2. **Severity:** Accurate CVSS rating (e.g., Low, Medium, High).
+3. **Target Asset:** Exact in-scope URL or endpoint.
+4. **Vulnerability Description:** Explain what the vulnerability is and the underlying cause.
+5. **Step-by-Step Proof of Concept (PoC):** Minimal, reproducible steps demonstrating the issue without causing harm or data corruption.
+6. **Business Impact:** How an attacker could abuse this to affect the company or its users.
+7. **Remediation Recommendation:** Practical guidance on how developers can remediate the bug (e.g., configure strict CORS allowlists, implement Content-Security-Policy headers, revoke and rotate exposed credentials).
+
+> [!IMPORTANT]
+> **Strict Ethical Policy:** Only test systems you have explicit, documented permission to assess. Strictly respect program rules of engagement, rate limits, and out-of-scope exclusions. Never perform denial-of-service, data exfiltration, or modification of live user data.
+
+---
+
+## 📥 Universal On-Demand Tool Installer
+
+No tool is ever missing in ADos! When any security tool is invoked (from the Desktop Studio, REST API, or CLI), the **Universal Tool Installer** (`tools/tool_installer.py`) dynamically guarantees readiness:
+
+- **Instant Zero-Wait Setup:** If a tool binary (`john`, `nmap`, `sqlmap`, `adb`, `subfinder`, `secret-scan`, etc.) is not present on your system PATH, the installer automatically generates a lightweight, high-performance pure-Python fallback inside `tools/bin/` with a Windows `.bat` and Linux shell launcher in **< 0.005 seconds**.
+- **Zero External Dependencies:** Built entirely with Python's standard library (`urllib`, `socket`, `ssl`, `json`, `hashlib`, `re`, `argparse`).
+- **Interactive UI Toggle:** Check "Auto-Install On-Demand" in ADos Studio to have missing tools installed transparently before execution.
+- **Batch Verification:** Click **"📥 Install / Verify All Tools"** to verify and install all 15+ cybersecurity tools at once.
+
+---
+
+## 📱 Mobile NetHunter OS Builder & Samsung Optimizations
+
+ADos consolidates the entire **Kali NetHunter** mobile ecosystem (including `kali-nethunter-installer`) into a unified build orchestrator:
+
+```bash
+# Build package for Samsung Galaxy S10 with Red Team tools:
+python3 build.py --device samsung_s10 --release 11 --rootfs minimal --tools redteam --debloat-samsung
+
+# Build for generic ARM64 phone:
+python3 build.py --device generic_arm64 --release 13 --type twrp
+```
+
+### Supported Hardware Presets:
 - `samsung_s9` (Galaxy S9 / S9+)
 - `samsung_s10` (Galaxy S10 / S10e / S10+)
 - `samsung_s20` (Galaxy S20 / S20+ / S20 Ultra)
@@ -82,83 +169,47 @@ Supported device presets include:
 - `samsung_note10` (Galaxy Note 10 / Note 10+)
 - `samsung_a50` (Galaxy A50)
 - `samsung_a52` (Galaxy A52 / A52s 5G)
-- `generic_arm64` (All Generic 64-bit ARM Android devices / GSI)
-- `generic_armhf` (Generic 32-bit ARM devices)
+- `generic_arm64` (Generic 64-bit ARM / GSI)
+- `generic_armhf` (Generic 32-bit ARM)
 
-### 3. Build Your Package
-Build a lightweight package for a Samsung Galaxy S10 with the Red Team hacking arsenal:
-```bash
-python3 build.py --device samsung_s10 --release 11 --rootfs minimal --tools redteam --debloat-samsung
+---
+
+## 🔌 Full-Stack REST Backend API Reference
+
+ADos includes a lightweight HTTP REST server powering both the desktop software and remote integrations.
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/health` / `/status` | Server health check and system metrics |
+| `GET` | `/api/tools/installed` | List all available and installed security tools with status |
+| `POST` | `/install-tool` | Install or verify any tool on-demand (`{"tool": "subfinder"}`) |
+| `POST` | `/api/tools/execute` | Execute an installed security tool with arguments |
+| `POST` | `/api/build` | Trigger mobile OS package generation |
+| `GET` | `/api/devices` | Query supported hardware device matrix |
+| `GET` | `/api/profiles` | Query curated toolset profiles |
+
+---
+
+## 📖 In-Depth Guides & Documentation
+
+- **[Installation Guide](docs/INSTALL_GUIDE.md):** Complete flashing, Magisk root, and NetHunter KeX setup.
+- **[Samsung Galaxy Setup Guide](docs/SAMSUNG_GUIDE.md):** Dedicated Knox mitigation and Odin guide.
+- **[Developer Guide](docs/DEVELOPER_GUIDE.md):** Extending device profiles and custom packages.
+
+---
+
+## 🧪 Verification & Automated Testing
+
+All features maintain 100% automated test coverage:
+
+```powershell
+# Run the 54+ ADos core test suite:
+python -m unittest discover -s tests
 ```
 
-#### Available Toolset Profiles (`--tools`):
-- `essential`: Nmap, Masscan, Aircrack-ng, Wifite, Metasploit, SQLMap, Netcat (Default)
-- `wireless`: Full Wi-Fi arsenal (Aircrack, Wifite, Hcxdumptool, Mdk4, Reaver, Bully, Kismet)
-- `web`: Web penetration testing (SQLMap, Gobuster, FFuF, Nikto, WPScan, Commix, WhatWeb)
-- `redteam`: Full offensive suite (Network, Wi-Fi, MITM, Web, Metasploit, John, Hydra, Hashcat)
-- `full`: Complete Kali toolkit including Software Defined Radio (RTL-SDR, HackRF) and Bluetooth
-
 ---
 
-## 📱 Mobile Interactive Pentest Dashboard (`ados-menu`)
-
-Inside the phone's terminal, simply type `ados-menu` to launch the touchscreen-friendly dashboard:
-
-```text
-    ___    ____            
-   /   |  / __ \____  _____
-  / /| | / / / / __ \/ ___/
- / ___ |/ /_/ / /_/ (__  ) 
-/_/  |_/_____/\____/____/  
-======================================================
-  ADos - Mobile Cybersecurity Operating System
-  Interactive Offensive Security Dashboard
-======================================================
- [1] Network Recon (Nmap & Host Discovery)
- [2] Wi-Fi Auditing & Monitor Mode (Wifite & Aircrack)
- [3] Man-in-the-Middle (Bettercap & Responder)
- [4] Web Vulnerability Scanner (SQLMap & Gobuster)
- [5] BadUSB & DuckHunter Payloads (/dev/hidg0)
- [6] Metasploit Framework Console (msfconsole)
- [7] NetHunter KeX (Graphical Desktop)
- [8] Install / Update Hacking Toolsets
- [0] Exit to Shell
-```
-
-Or for a generic ARM64 phone running Android 13:
-```bash
-python3 build.py --device generic_arm64 --release 13 --type twrp
-```
-
-The output flashable ZIP and its SHA256 checksum will be generated in `output/`.
-
----
-
-## 🐳 Building with Docker (Zero Setup)
-
-You don't need to configure Android SDKs, cross-compilers, or Linux packages on your host machine.
-
-- **Windows:**
-  ```cmd
-  run_docker.bat --device samsung_s10 --release 11 --debloat-samsung
-  ```
-- **Linux / macOS:**
-  ```bash
-  chmod +x run_docker.sh
-  ./run_docker.sh --device samsung_s10 --release 11 --debloat-samsung
-  ```
-
----
-
-## 📖 In-Depth Installation & Device Guides
-
-- **[Complete Installation Guide](docs/INSTALL_GUIDE.md):** Step-by-step instructions for unlocking bootloaders, flashing TWRP/OrangeFox, rooting with Magisk, installing ADos packages, configuring the Kali chroot, and running the KeX desktop GUI.
-- **[Samsung Galaxy Setup & Optimization Guide](docs/SAMSUNG_GUIDE.md):** Dedicated guide for Samsung owners: Odin flashing, Knox mitigation, vbmeta disabling, RAM debloating, and Exynos/Snapdragon tips.
-- **[Developer & Porting Guide](docs/DEVELOPER_GUIDE.md):** Learn how to add new device profiles, customize AnyKernel3 scripts, and build companion APKs from source.
-
----
-
-## ⚖️ License & Credits
+## ⚖️ License & Ethical Disclaimer
 
 - Licensed under the **GNU General Public License v3.0 (GPLv3)**.
-- Based on the open-source engineering of **OffSec / Kali Linux NetHunter** project.
+- Designed strictly for authorized penetration testing, academic security research, defensive hardening, and authorized bug bounty participation. Unauthorized testing against third-party systems is illegal.

@@ -34,6 +34,25 @@ BANNER = r"""
 ======================================================
 """
 
+
+def start_server(port: int = 8000):
+    """Start the ADos Full-Stack Backend API server."""
+    import subprocess
+    api_script = os.path.join(REPO_ROOT, "backend", "api.py")
+    proc = subprocess.Popen([sys.executable, api_script, "--port", str(port)], cwd=REPO_ROOT)
+    print(f"[*] ADos Backend API started on port {port} (PID: {proc.pid})")
+    return proc
+
+def launch_gui():
+    """Launch the ADos Studio desktop GUI application."""
+    import subprocess
+    launcher = os.path.join(REPO_ROOT, "launch_studio.py")
+    if not os.path.isfile(launcher):
+        launcher = os.path.join(REPO_ROOT, "desktop", "ados_studio.py")
+    proc = subprocess.Popen([sys.executable, launcher], cwd=REPO_ROOT)
+    print(f"[*] ADos Studio Desktop GUI launched (PID: {proc.pid})")
+    return proc
+
 def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="ADos NetHunter Mobile Cybersecurity Builder",
@@ -101,6 +120,22 @@ Examples:
         help="Simulate the build process and validate configurations without creating zips"
     )
     parser.add_argument(
+        "--launch-gui",
+        action="store_true",
+        help="Launch the ADos Studio desktop GUI on PC"
+    )
+    parser.add_argument(
+        "--serve",
+        action="store_true",
+        help="Start the ADos Full-Stack Backend API server"
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8000,
+        help="Port for the Backend API server (default: 8000)"
+    )
+    parser.add_argument(
         "-o", "--output",
         help="Custom output directory or file path for the generated ZIP"
     )
@@ -127,7 +162,22 @@ def main(args: List[str] = None):
     
     engine = ADosBuilderEngine(repo_root=REPO_ROOT)
     
-    # 1. Action: List Devices
+    # 0. Action: Launch Desktop GUI
+    if opts.launch_gui:
+        launch_gui()
+        return 0
+
+    # 0. Action: Start Backend API Server
+    if opts.serve:
+        proc = start_server(opts.port)
+        try:
+            proc.wait()
+        except KeyboardInterrupt:
+            print("[*] Stopping server...")
+            proc.terminate()
+        return 0
+
+        # 1. Action: List Devices
     if opts.list_devices:
         print_devices_table(engine.list_devices())
         return 0

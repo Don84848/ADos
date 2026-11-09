@@ -60,6 +60,43 @@ ensure_tools_bin_in_path()
 # ---------------------------------------------------------------------------
 
 TOOL_SPECS = {
+    "subfinder": {
+        "display_name": "Subfinder (Subdomain Discovery)",
+        "category": "bugbounty",
+        "binary": "subfinder",
+        "has_py_fallback": True,
+    },
+    "header-audit": {
+        "display_name": "Header Audit (Security Headers)",
+        "category": "bugbounty",
+        "binary": "header-audit",
+        "has_py_fallback": True,
+    },
+    "cors-scan": {
+        "display_name": "CORS Misconfiguration Scanner",
+        "category": "bugbounty",
+        "binary": "cors-scan",
+        "has_py_fallback": True,
+    },
+    "cert-inspect": {
+        "display_name": "Certificate & SAN Inspector",
+        "category": "bugbounty",
+        "binary": "cert-inspect",
+        "has_py_fallback": True,
+    },
+    "secret-scan": {
+        "display_name": "Secret & API Token Leak Scanner",
+        "category": "bugbounty",
+        "binary": "secret-scan",
+        "has_py_fallback": True,
+    },
+    "tech-detect": {
+        "display_name": "Web Technology Fingerprinter",
+        "category": "bugbounty",
+        "binary": "tech-detect",
+        "has_py_fallback": True,
+    },
+
     "john": {
         "display_name": "John the Ripper",
         "category": "passwords",
@@ -739,6 +776,340 @@ if __name__ == "__main__":
             return bat
         else:
             sh_p = os.path.join(TOOLS_BIN_DIR, "hydra")
+            with open(sh_p, "w", encoding="utf-8") as f:
+                f.write(f'#!/bin/sh\nexec "{sys.executable}" "{script_path}" "$@"\n')
+            os.chmod(sh_p, 0o755)
+            return sh_p
+
+    elif clean_name == "header-audit":
+        script_path = os.path.join(TOOLS_BIN_DIR, "header_audit.py")
+        code = '''#!/usr/bin/env python3
+"""ADos HTTP Security Headers & Misconfiguration Auditor for Bug Hunting"""
+import sys, argparse, urllib.request, urllib.error
+
+SECURITY_HEADERS = {
+    "Strict-Transport-Security": "HSTS protects against SSL-stripping and MITM attacks",
+    "Content-Security-Policy": "CSP mitigates Cross-Site Scripting (XSS) and data injection",
+    "X-Frame-Options": "Protects against Clickjacking attacks",
+    "X-Content-Type-Options": "Prevents MIME-sniffing attacks (should be 'nosniff')",
+    "Referrer-Policy": "Controls leakage of sensitive URL paths in Referer header",
+    "Permissions-Policy": "Restricts browser features like camera, microphone, geolocation"
+}
+DANGEROUS_HEADERS = ["Server", "X-Powered-By", "X-AspNet-Version", "X-Backend"]
+
+def main():
+    parser = argparse.ArgumentParser(description="HTTP Security Headers Auditor")
+    parser.add_argument("url", nargs="?", default="https://example.com", help="Target URL")
+    args = parser.parse_args()
+    url = args.url if args.url.startswith("http") else "https://" + args.url
+    print(f"[*] Auditing HTTP Security Headers for: {url}")
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "ADos-BugBounty-Auditor/1.0", "Accept": "*/*"})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            headers = dict(resp.headers)
+            status_code = resp.status
+    except urllib.error.HTTPError as e:
+        headers = dict(e.headers)
+        status_code = e.code
+    except Exception as e:
+        print(f"[!] Connection failed: {e}")
+        return 1
+
+    print(f"[+] Response Status: {status_code}")
+    print(f"\n{'='*60}\n SECURITY HEADERS ASSESSMENT\n{'='*60}")
+    score = 0
+    for h, desc in SECURITY_HEADERS.items():
+        found = any(k.lower() == h.lower() for k in headers)
+        if found:
+            val = next(v for k, v in headers.items() if k.lower() == h.lower())
+            print(f"[+] PASS | {h:<28}: {val[:50]}")
+            score += 1
+        else:
+            print(f"[-] MISSING | {h:<28} [!] {desc}")
+
+    print(f"\n{'='*60}\n INFORMATION DISCLOSURE / BANNER LEAKAGE\n{'='*60}")
+    leaks = [f"{k}: {v}" for k, v in headers.items() if any(k.lower() == dh.lower() for dh in DANGEROUS_HEADERS)]
+    if leaks:
+        for l in leaks: print(f"[!] LEAK DETECTED | {l}")
+    else:
+        print("[+] No sensitive software version headers exposed.")
+    print(f"\n[*] Header Security Score: {score}/{len(SECURITY_HEADERS)} ({(score/len(SECURITY_HEADERS))*100:.0f}%)")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
+'''
+        with open(script_path, "w", encoding="utf-8") as f:
+            f.write(code)
+        if sys.platform == "win32":
+            bat = os.path.join(TOOLS_BIN_DIR, "header-audit.bat")
+            with open(bat, "w", encoding="utf-8") as f:
+                f.write(f'@echo off\n"{sys.executable}" "{script_path}" %*\n')
+            return bat
+        else:
+            sh_p = os.path.join(TOOLS_BIN_DIR, "header-audit")
+            with open(sh_p, "w", encoding="utf-8") as f:
+                f.write(f'#!/bin/sh\nexec "{sys.executable}" "{script_path}" "$@"\n')
+            os.chmod(sh_p, 0o755)
+            return sh_p
+
+    elif clean_name == "cors-scan":
+        script_path = os.path.join(TOOLS_BIN_DIR, "cors_scan.py")
+        code = '''#!/usr/bin/env python3
+"""ADos CORS Misconfiguration Scanner for Bug Hunting"""
+import sys, argparse, urllib.request
+
+def main():
+    parser = argparse.ArgumentParser(description="CORS Misconfiguration Scanner")
+    parser.add_argument("url", nargs="?", default="https://example.com", help="Target URL")
+    args = parser.parse_args()
+    url = args.url if args.url.startswith("http") else "https://" + args.url
+    print(f"[*] Scanning CORS misconfigurations on: {url}")
+    origins = ["https://evil.com", "null", "https://not-authorized.net"]
+    issues = 0
+    for origin in origins:
+        print(f"\n[-] Testing Origin: {origin}")
+        try:
+            req = urllib.request.Request(url, headers={"Origin": origin, "User-Agent": "ADos-CORS/1.0"})
+            with urllib.request.urlopen(req, timeout=8) as resp:
+                acao = resp.headers.get("Access-Control-Allow-Origin")
+                acac = resp.headers.get("Access-Control-Allow-Credentials")
+                print(f"    Access-Control-Allow-Origin     : {acao}")
+                print(f"    Access-Control-Allow-Credentials: {acac}")
+                if acao == origin:
+                    print(f"    [!] VULNERABILITY FOUND: Arbitrary Origin Reflection ({origin})")
+                    issues += 1
+                elif acao == "*" and acac and acac.lower() == "true":
+                    print("    [!] MISCONFIGURATION: Wildcard with credentials allowed.")
+                    issues += 1
+                else:
+                    print("    [+] Secure: Origin not reflected.")
+        except Exception as e:
+            print(f"    [!] Request notice: {e}")
+    print(f"\n[*] CORS Scan completed. Total potential findings: {issues}")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
+'''
+        with open(script_path, "w", encoding="utf-8") as f:
+            f.write(code)
+        if sys.platform == "win32":
+            bat = os.path.join(TOOLS_BIN_DIR, "cors-scan.bat")
+            with open(bat, "w", encoding="utf-8") as f:
+                f.write(f'@echo off\n"{sys.executable}" "{script_path}" %*\n')
+            return bat
+        else:
+            sh_p = os.path.join(TOOLS_BIN_DIR, "cors-scan")
+            with open(sh_p, "w", encoding="utf-8") as f:
+                f.write(f'#!/bin/sh\nexec "{sys.executable}" "{script_path}" "$@"\n')
+            os.chmod(sh_p, 0o755)
+            return sh_p
+
+    elif clean_name == "cert-inspect":
+        script_path = os.path.join(TOOLS_BIN_DIR, "cert_inspect.py")
+        code = '''#!/usr/bin/env python3
+"""ADos SSL/TLS Certificate Inspector & SAN Subdomain Harvester"""
+import sys, argparse, socket, ssl
+
+def main():
+    parser = argparse.ArgumentParser(description="SSL/TLS Certificate Inspector")
+    parser.add_argument("target", nargs="?", default="example.com", help="Target host")
+    parser.add_argument("-p", "--port", type=int, default=443, help="Port (default: 443)")
+    args = parser.parse_args()
+    host = args.target.replace("https://", "").replace("http://", "").split("/")[0].split(":")[0]
+    port = args.port
+    print(f"[*] Connecting to {host}:{port} for SSL/TLS inspection...")
+    ctx = ssl.create_default_context()
+    try:
+        with socket.create_connection((host, port), timeout=8) as sock:
+            with ctx.wrap_socket(sock, server_hostname=host) as ssock:
+                cert = ssock.getpeercert()
+                cipher = ssock.cipher()
+                version = ssock.version()
+    except Exception as e:
+        print(f"[!] SSL connection error: {e}")
+        return 1
+
+    print(f"[+] TLS Protocol Version : {version}")
+    print(f"[+] Cipher Suite         : {cipher[0]} ({cipher[2]} bits)")
+    subject = dict(x[0] for x in cert.get("subject", []))
+    issuer = dict(x[0] for x in cert.get("issuer", []))
+    print(f"[+] Common Name (CN)     : {subject.get('commonName', 'N/A')}")
+    print(f"[+] Issuer Organization  : {issuer.get('organizationName', 'N/A')}")
+    print(f"[+] Valid Until          : {cert.get('notAfter')}")
+    sans = [x[1] for x in cert.get("subjectAltName", []) if x[0] == "DNS"]
+    print(f"\n[+] Subject Alternative Names (SANs) Discovered ({len(sans)}):")
+    for s in sans: print(f"    - {s}")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
+'''
+        with open(script_path, "w", encoding="utf-8") as f:
+            f.write(code)
+        if sys.platform == "win32":
+            bat = os.path.join(TOOLS_BIN_DIR, "cert-inspect.bat")
+            with open(bat, "w", encoding="utf-8") as f:
+                f.write(f'@echo off\n"{sys.executable}" "{script_path}" %*\n')
+            return bat
+        else:
+            sh_p = os.path.join(TOOLS_BIN_DIR, "cert-inspect")
+            with open(sh_p, "w", encoding="utf-8") as f:
+                f.write(f'#!/bin/sh\nexec "{sys.executable}" "{script_path}" "$@"\n')
+            os.chmod(sh_p, 0o755)
+            return sh_p
+
+    elif clean_name == "secret-scan":
+        script_path = os.path.join(TOOLS_BIN_DIR, "secret_scan.py")
+        code = r'''#!/usr/bin/env python3
+"""ADos Client-Side Secret & Token Leak Scanner for Bug Hunting"""
+import sys, argparse, re, urllib.request
+
+PATTERNS = {
+    "AWS Access Key ID": r"(A3T[A-Z0-9]|AKIA[0-9A-Z]{16}|ASIA[0-9A-Z]{16})",
+    "Google API Key": r"AIza[0-9A-Za-z_-]{35}",
+    "GitHub Token": r"ghp_[0-9a-zA-Z]{36}",
+    "Stripe Live Key": r"sk_live_[0-9a-zA-Z]{24}",
+    "Private RSA Key": r"-----BEGIN RSA PRIVATE KEY-----",
+    "JSON Web Token (JWT)": r"ey[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}",
+}
+
+def main():
+    parser = argparse.ArgumentParser(description="Client-Side Secret & Token Leak Scanner")
+    parser.add_argument("url", nargs="?", default="https://example.com", help="Target URL")
+    args = parser.parse_args()
+    url = args.url if args.url.startswith("http") else "https://" + args.url
+    print(f"[*] Scanning client-side web assets for leaked secrets at: {url}")
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "ADos-SecretScanner/1.0"})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            html = resp.read().decode("utf-8", errors="ignore")
+    except Exception as e:
+        print(f"[!] Failed to fetch target URL: {e}")
+        return 1
+
+    total = 0
+    for name, pat in PATTERNS.items():
+        m = re.findall(pat, html)
+        if m:
+            print(f"[!] POTENTIAL SECRET LEAK: {name} (Count: {len(m)})")
+            total += len(m)
+    if total == 0:
+        print("[+] No common API keys or secrets detected in root document.")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
+'''
+        with open(script_path, "w", encoding="utf-8") as f:
+            f.write(code)
+        if sys.platform == "win32":
+            bat = os.path.join(TOOLS_BIN_DIR, "secret-scan.bat")
+            with open(bat, "w", encoding="utf-8") as f:
+                f.write(f'@echo off\n"{sys.executable}" "{script_path}" %*\n')
+            return bat
+        else:
+            sh_p = os.path.join(TOOLS_BIN_DIR, "secret-scan")
+            with open(sh_p, "w", encoding="utf-8") as f:
+                f.write(f'#!/bin/sh\nexec "{sys.executable}" "{script_path}" "$@"\n')
+            os.chmod(sh_p, 0o755)
+            return sh_p
+
+    elif clean_name == "subfinder":
+        script_path = os.path.join(TOOLS_BIN_DIR, "subfinder.py")
+        code = '''#!/usr/bin/env python3
+"""ADos Fast Subdomain Discovery & OSINT Reconnaissance Tool"""
+import sys, argparse, socket, urllib.request, json
+
+def main():
+    parser = argparse.ArgumentParser(description="Subdomain Discovery Tool")
+    parser.add_argument("domain", nargs="?", default="example.com", help="Target domain (e.g., example.com)")
+    parser.add_argument("-d", "--domain-flag", dest="domain_alt", help="Target domain flag")
+    args = parser.parse_args()
+    domain = (args.domain_alt or args.domain).replace("https://", "").replace("http://", "").split("/")[0].strip()
+    print(f"[*] Enumerating subdomains for target: {domain}")
+    found = set()
+    prefixes = ["www", "api", "admin", "dev", "staging", "test", "mail", "vpn", "auth", "app", "portal", "corp"]
+    for p in prefixes:
+        host = f"{p}.{domain}"
+        try:
+            ip = socket.gethostbyname(host)
+            found.add(f"{host} [{ip}]")
+        except Exception:
+            pass
+    print(f"\n[+] Discovered {len(found)} active subdomains:")
+    for f in sorted(list(found)): print(f"    - {f}")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
+'''
+        with open(script_path, "w", encoding="utf-8") as f:
+            f.write(code)
+        if sys.platform == "win32":
+            bat = os.path.join(TOOLS_BIN_DIR, "subfinder.bat")
+            with open(bat, "w", encoding="utf-8") as f:
+                f.write(f'@echo off\n"{sys.executable}" "{script_path}" %*\n')
+            return bat
+        else:
+            sh_p = os.path.join(TOOLS_BIN_DIR, "subfinder")
+            with open(sh_p, "w", encoding="utf-8") as f:
+                f.write(f'#!/bin/sh\nexec "{sys.executable}" "{script_path}" "$@"\n')
+            os.chmod(sh_p, 0o755)
+            return sh_p
+
+    elif clean_name == "tech-detect":
+        script_path = os.path.join(TOOLS_BIN_DIR, "tech_detect.py")
+        code = '''#!/usr/bin/env python3
+"""ADos Web Technology & Framework Fingerprinting Tool"""
+import sys, argparse, urllib.request, urllib.error
+
+def main():
+    parser = argparse.ArgumentParser(description="Web Technology Fingerprinter")
+    parser.add_argument("url", nargs="?", default="https://example.com", help="Target URL")
+    args = parser.parse_args()
+    url = args.url if args.url.startswith("http") else "https://" + args.url
+    print(f"[*] Fingerprinting technology stack for: {url}")
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "ADos-TechDetect/1.0"})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            headers = dict(resp.headers)
+            html = resp.read().decode("utf-8", errors="ignore")
+    except urllib.error.HTTPError as e:
+        headers = dict(e.headers)
+        html = e.read().decode("utf-8", errors="ignore")
+    except Exception as e:
+        print(f"[!] Connection failed: {e}")
+        return 1
+
+    techs = []
+    server = headers.get("Server") or headers.get("server")
+    if server: techs.append(f"Web Server: {server}")
+    xpb = headers.get("X-Powered-By") or headers.get("x-powered-by")
+    if xpb: techs.append(f"Backend Runtime: {xpb}")
+    if "wp-content" in html or "wp-includes" in html: techs.append("CMS: WordPress")
+    if "__NEXT_DATA__" in html: techs.append("Frontend Framework: Next.js (React)")
+    if "data-reactroot" in html or "react" in html.lower(): techs.append("JavaScript UI: React")
+    if "ng-version" in html or "angular" in html.lower(): techs.append("JavaScript UI: Angular")
+    if "vue" in html.lower(): techs.append("JavaScript UI: Vue.js")
+    if "cf-ray" in headers: techs.append("CDN / WAF: Cloudflare")
+    print(f"\n[+] Detected Technologies ({len(techs)}):")
+    for t in techs: print(f"    - {t}")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
+'''
+        with open(script_path, "w", encoding="utf-8") as f:
+            f.write(code)
+        if sys.platform == "win32":
+            bat = os.path.join(TOOLS_BIN_DIR, "tech-detect.bat")
+            with open(bat, "w", encoding="utf-8") as f:
+                f.write(f'@echo off\n"{sys.executable}" "{script_path}" %*\n')
+            return bat
+        else:
+            sh_p = os.path.join(TOOLS_BIN_DIR, "tech-detect")
             with open(sh_p, "w", encoding="utf-8") as f:
                 f.write(f'#!/bin/sh\nexec "{sys.executable}" "{script_path}" "$@"\n')
             os.chmod(sh_p, 0o755)

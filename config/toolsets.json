@@ -102,13 +102,59 @@
         "wget",
         "python3-pip"
       ]
+    },
+    "bug_bounty": {
+      "name": "Bug Bounty & Responsible Vulnerability Disclosure",
+      "packages": [
+        "subfinder",
+        "header-audit",
+        "cors-scan",
+        "cert-inspect",
+        "secret-scan",
+        "tech-detect"
+      ]
     }
   },
   "profiles": {
-    "essential": ["network", "wireless", "exploitation"],
-    "wireless": ["wireless", "network"],
-    "web": ["web", "network", "mitm"],
-    "redteam": ["network", "wireless", "mitm", "web", "exploitation", "passwords", "social_engineering"],
-    "full": ["network", "wireless", "mitm", "web", "exploitation", "passwords", "bluetooth_rf", "social_engineering"]
+    "essential": [
+      "network",
+      "wireless",
+      "exploitation"
+    ],
+    "wireless": [
+      "wireless",
+      "network"
+    ],
+    "web": [
+      "web",
+      "network",
+      "mitm"
+    ],
+    "redteam": [
+      "network",
+      "wireless",
+      "mitm",
+      "web",
+      "exploitation",
+      "passwords",
+      "social_engineering",
+      "bug_bounty"
+    ],
+    "full": [
+      "network",
+      "wireless",
+      "mitm",
+      "web",
+      "exploitation",
+      "passwords",
+      "bluetooth_rf",
+      "social_engineering",
+      "bug_bounty"
+    ],
+    "bugbounty": [
+      "bug_bounty",
+      "web",
+      "network"
+    ]
   }
 }
