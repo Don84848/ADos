@@ -1,0 +1,84 @@
+{
+  "description": "Hardware and kernel integration profiles for Samsung Galaxy phones running ADos",
+  "knox_services": [
+    "com.sec.enterprise.knox.attestation",
+    "com.sec.enterprise.knox.cloudmdm.smdms",
+    "com.samsung.knox.securefolder",
+    "com.samsung.android.knox.containercore",
+    "com.samsung.android.knox.kpecore",
+    "com.sec.knox.knoxsetupwizardclient",
+    "com.knox.vpn.proxyhandler"
+  ],
+  "samsung_devices": {
+    "samsung_s9": {
+      "chipset": "Exynos 9810 / Snapdragon 845",
+      "partition_scheme": "legacy_a_only",
+      "boot_block": "/dev/block/bootdevice/by-name/boot",
+      "recovery_block": "/dev/block/bootdevice/by-name/recovery",
+      "dtb_location": "kernel_dtb",
+      "vaultkeeper_bypass": true,
+      "defex_bypass": true,
+      "recommended_twrp": "twrp-3.7.0_9-0-starlte.img"
+    },
+    "samsung_s10": {
+      "chipset": "Exynos 9820 / Snapdragon 855",
+      "partition_scheme": "system_as_root",
+      "boot_block": "/dev/block/bootdevice/by-name/boot",
+      "recovery_block": "/dev/block/bootdevice/by-name/recovery",
+      "dtb_location": "dtb_image",
+      "vaultkeeper_bypass": true,
+      "defex_bypass": true,
+      "magisk_recovery_mode": true,
+      "recommended_twrp": "twrp-3.7.0_9-0-beyond1lte.img"
+    },
+    "samsung_s20": {
+      "chipset": "Exynos 990 / Snapdragon 865",
+      "partition_scheme": "dynamic_partitions",
+      "boot_block": "/dev/block/by-name/boot",
+      "recovery_block": "/dev/block/by-name/recovery",
+      "dtb_location": "vendor_boot",
+      "vaultkeeper_bypass": true,
+      "defex_bypass": true,
+      "vbmeta_patch_required": true,
+      "recommended_twrp": "twrp-3.7.0_12-0-x1s.img"
+    },
+    "samsung_note9": {
+      "chipset": "Exynos 9810 / Snapdragon 845",
+      "partition_scheme": "legacy_a_only",
+      "boot_block": "/dev/block/bootdevice/by-name/boot",
+      "recovery_block": "/dev/block/bootdevice/by-name/recovery",
+      "dtb_location": "kernel_dtb",
+      "vaultkeeper_bypass": true,
+      "defex_bypass": true,
+      "spen_preserved": true
+    },
+    "samsung_note10": {
+      "chipset": "Exynos 9825 / Snapdragon 855",
+      "partition_scheme": "system_as_root",
+      "boot_block": "/dev/block/bootdevice/by-name/boot",
+      "recovery_block": "/dev/block/bootdevice/by-name/recovery",
+      "dtb_location": "dtb_image",
+      "vaultkeeper_bypass": true,
+      "defex_bypass": true,
+      "magisk_recovery_mode": true
+    },
+    "samsung_a50": {
+      "chipset": "Exynos 9610",
+      "partition_scheme": "system_as_root",
+      "boot_block": "/dev/block/by-name/boot",
+      "recovery_block": "/dev/block/by-name/recovery",
+      "dtb_location": "kernel_dtb",
+      "vaultkeeper_bypass": true,
+      "defex_bypass": true
+    },
+    "samsung_a52": {
+      "chipset": "Snapdragon 720G / 778G",
+      "partition_scheme": "dynamic_partitions",
+      "boot_block": "/dev/block/by-name/boot",
+      "recovery_block": "/dev/block/by-name/recovery",
+      "dtb_location": "vendor_boot",
+      "vaultkeeper_bypass": false,
+      "defex_bypass": true
+    }
+  }
+}
