@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  ados-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ados-builder:latest
+    container_name: ados_builder
+    volumes:
+      - .:/build
+    working_dir: /build
+    stdin_open: true
+    tty: true
