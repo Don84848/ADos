@@ -34,3 +34,5 @@ tmp/
 # Temporary build workspace
 tmp/
 
+
+tools/bin/

@@ -437,8 +437,27 @@ def handle_run_tool(handler: BaseHTTPRequestHandler, tool_from_path: str = None)
             bufsize=1,
         )
     except FileNotFoundError:
-        _send_error(handler, 500, f"Tool '{tool}' not found on PATH")
-        return
+        # Trigger on-demand tool installation and retry execution
+        try:
+            from tools.tool_installer import ensure_tool_ready, ensure_tools_bin_in_path
+            ensure_tools_bin_in_path()
+            ok, res_path = ensure_tool_ready(tool)
+            if ok:
+                resolved_cmd = [res_path] + cmd_args if os.path.isfile(res_path) else [tool] + cmd_args
+                proc = subprocess.Popen(
+                    resolved_cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1,
+                    shell=(os.name == 'nt'),
+                )
+            else:
+                _send_error(handler, 500, f"Tool '{tool}' not found on PATH and auto-install failed: {res_path}")
+                return
+        except Exception as exc:
+            _send_error(handler, 500, f"Tool '{tool}' not found on PATH (auto-install error: {exc})")
+            return
     except OSError as exc:
         _send_error(handler, 500, f"Failed to start '{tool}': {exc}")
         return
@@ -605,6 +624,55 @@ def handle_ram_stats(handler: BaseHTTPRequestHandler) -> None:
 # HTTP Handler
 # ---------------------------------------------------------------------------
 
+def handle_install_tool(handler: BaseHTTPRequestHandler, tool_from_path: str = None) -> None:
+    """Install a tool on-demand via HTTP API."""
+    try:
+        body = _read_body(handler)
+    except Exception:
+        body = {}
+    tool = body.get("tool", "").strip() or (tool_from_path or "").strip()
+    if not tool:
+        _send_error(handler, 400, "Missing 'tool' field")
+        return
+
+    try:
+        from tools.tool_installer import install_tool, ensure_tools_bin_in_path
+        ensure_tools_bin_in_path()
+        ok, path_or_msg = install_tool(tool)
+        if ok:
+            _send_json(handler, 200, {
+                "tool": tool,
+                "status": "installed",
+                "path": path_or_msg,
+                "message": f"Tool '{tool}' is installed and ready"
+            })
+        else:
+            _send_json(handler, 500, {
+                "tool": tool,
+                "status": "failed",
+                "error": path_or_msg
+            })
+    except Exception as ex:
+        _send_error(handler, 500, f"Error installing '{tool}': {ex}")
+
+
+def handle_list_installed_tools(handler: BaseHTTPRequestHandler) -> None:
+    """Return JSON map of all supported tools and their installation status."""
+    try:
+        from tools.tool_installer import is_tool_installed, ensure_tools_bin_in_path
+        ensure_tools_bin_in_path()
+        result = {}
+        for t in SUPPORTED_TOOLS:
+            inst, p = is_tool_installed(t)
+            result[t] = {
+                "installed": inst,
+                "path": p if inst else None,
+            }
+        _send_json(handler, 200, {"status": "ok", "tools": result})
+    except Exception as ex:
+        _send_error(handler, 500, f"Error listing installed tools: {ex}")
+
+
 class ADosAPIHandler(BaseHTTPRequestHandler):
     """Route HTTP requests to appropriate handlers."""
 
@@ -631,6 +699,8 @@ class ADosAPIHandler(BaseHTTPRequestHandler):
             handle_firmware(self)
         elif path in ("/api/ram-stats", "/ram-stats"):
             handle_ram_stats(self)
+        elif path in ("/api/tools/installed", "/tools/installed"):
+            handle_list_installed_tools(self)
         elif re.match(r"^/(api/logs|tool-output)/(\d+)$", path):
             m = re.match(r"^/(api/logs|tool-output)/(\d+)$", path)
             handle_tool_output(self, m.group(2))
@@ -657,6 +727,10 @@ class ADosAPIHandler(BaseHTTPRequestHandler):
             m_stop = re.match(r"^/api/tools/([a-zA-Z0-9_\-]+)/stop$", path)
             if m_stop:
                 handle_stop_tool(self)
+                return
+            m_inst = _TOOL_INSTALL_RE.match(path)
+            if m_inst:
+                handle_install_tool(self, tool_from_path=m_inst.group(1))
                 return
             _send_error(self, 404, f"Unknown endpoint: {path}")
 

@@ -1,19 +1,38 @@
 #!/bin/bash
 # ADos Hacking Tools Installer & Updater
-# Installs curated pentesting arsenals inside Kali NetHunter Chroot
+# Installs curated pentesting arsenals inside Kali NetHunter Chroot or individual tools on-demand
 
 echo "=========================================================="
 echo "    ADos Mobile Cybersecurity Tools Installer"
 echo "=========================================================="
 
+# Check for single tool flag
+if [ "$1" = "--tool" ] || [ "$1" = "-t" ]; then
+    TOOL_NAME="$2"
+    if [ -z "$TOOL_NAME" ]; then
+        echo "[!] Error: No tool specified for --tool flag"
+        exit 1
+    fi
+    echo "[*] Installing single tool on-demand: $TOOL_NAME"
+    if [ "$(id -u)" -ne 0 ]; then
+        echo "[!] Warning: Not running as root. Attempting user/python fallback..."
+        python3 tools/tool_installer.py "$TOOL_NAME"
+        exit $?
+    fi
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update -y && apt-get install -y --no-install-recommends "$TOOL_NAME" || python3 tools/tool_installer.py "$TOOL_NAME"
+    exit $?
+fi
+
 PROFILE="${1:-essential}"
 
-echo "[*] Selected Arsenal Profile: $PROFILE"
+echo "[*] Selected Arsenal Profile or Tool: $PROFILE"
 
-# Ensure running as root
+# Ensure running as root for system package management
 if [ "$(id -u)" -ne 0 ]; then
-    echo "[!] Error: Must run as root (inside Kali chroot)."
-    exit 1
+    echo "[!] Not running as root. Attempting on-demand tool installation via Python resolver..."
+    python3 tools/tool_installer.py "$PROFILE"
+    exit $?
 fi
 
 export DEBIAN_FRONTEND=noninteractive
@@ -22,7 +41,7 @@ echo "[*] Updating Kali Linux package repositories..."
 apt-get update -y
 
 install_pkgs() {
-    echo "\n[+] Installing: $*"
+    echo -e "\n[+] Installing: $*"
     apt-get install -y --no-install-recommends "$@"
 }
 
@@ -64,6 +83,10 @@ case "$PROFILE" in
             gzip -d /usr/share/wordlists/rockyou.txt.gz
         fi
         ;;
+    john|sqlmap|nmap|hydra|hashcat|aircrack-ng|bettercap|gobuster|nikto|wfuzz|netcat|adb|masscan)
+        echo "[*] Installing specific tool on-demand: $PROFILE"
+        install_pkgs "$PROFILE" || python3 tools/tool_installer.py "$PROFILE"
+        ;;
     essential|*)
         echo "[*] Installing Essential Mobile Arsenal..."
         install_pkgs nmap masscan aircrack-ng wifite hcxdumptool macchanger metasploit-framework netcat-traditional sqlmap
@@ -76,7 +99,7 @@ if command -v msfdb >/dev/null 2>&1; then
     msfdb init >/dev/null 2>&1 || true
 fi
 
-echo "\n=========================================================="
+echo -e "\n=========================================================="
 echo "[+] Tools installation complete!"
 echo "[+] Launch the mobile menu anytime by typing: ados-menu"
 echo "=========================================================="
