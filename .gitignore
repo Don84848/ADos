@@ -31,8 +31,6 @@ tmp/
 # Docker
 .docker/
 
-# Temporary build workspace
-tmp/
 
 
 tools/bin/
