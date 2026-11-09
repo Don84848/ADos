@@ -760,7 +760,7 @@ class ADosStudio(tk.Tk):
         btn_frame.grid(row=6, column=0, columnspan=3, pady=6, padx=8, sticky=tk.W)
 
         self.run_btn = tk.Button(
-            btn_frame, text="▶ RUN", command=self._run_selected_tool,
+            btn_frame, text="▶ START / RUN", command=self._run_selected_tool,
             bg=GREEN, fg=DARK_BG, font=("Segoe UI", 11, "bold"), width=12, bd=0
         )
         self.run_btn.pack(side=tk.LEFT, padx=4)
@@ -789,13 +789,13 @@ class ADosStudio(tk.Tk):
         ).pack(side=tk.LEFT, padx=8)
 
         # Output console
-        tk.Label(f, text="Console Output:", bg=DARK_BG, fg=YELLOW, font=FONT_LABEL).grid(row=6, column=0, sticky=tk.NW, padx=8)
+        tk.Label(f, text="Console Output:", bg=DARK_BG, fg=YELLOW, font=FONT_LABEL).grid(row=7, column=0, sticky=tk.NW, padx=8, pady=(4, 2))
         self.output_txt = scrolledtext.ScrolledText(
             f, bg="#0d0d0d", fg=GREEN, font=FONT_MONO,
-            insertbackground=GREEN, wrap=tk.WORD, height=18
+            insertbackground=GREEN, wrap=tk.WORD, height=14
         )
-        self.output_txt.grid(row=6, column=0, columnspan=3, sticky=tk.NSEW, padx=8, pady=4)
-        f.rowconfigure(6, weight=1)
+        self.output_txt.grid(row=8, column=0, columnspan=3, sticky=tk.NSEW, padx=8, pady=4)
+        f.rowconfigure(8, weight=1)
 
     def _build_term_tab(self):
         f = self.term_tab
