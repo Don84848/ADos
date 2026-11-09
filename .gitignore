@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# Build artifacts
+output/
+dist/
+build/
+*.zip
+*.tar.gz
+*.tar.xz
+*.apk
+
+# Android / Gradle
+.gradle/
+local.properties
+*.keystore
+
+# Temporary and caches
+.cache/
+.tmp/
+tmp/
+*.log
+
+# Docker
+.docker/

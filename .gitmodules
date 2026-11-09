@@ -1,0 +1,34 @@
+[submodule "apps/kali-nethunter-app"]
+	path = apps/kali-nethunter-app
+	url = https://gitlab.com/kalilinux/nethunter/apps/kali-nethunter-app.git
+	branch = master
+
+[submodule "apps/kali-nethunter-terminal"]
+	path = apps/kali-nethunter-terminal
+	url = https://gitlab.com/kalilinux/nethunter/apps/kali-nethunter-terminal.git
+	branch = master
+
+[submodule "apps/kali-nethunter-kex"]
+	path = apps/kali-nethunter-kex
+	url = https://gitlab.com/kalilinux/nethunter/apps/kali-nethunter-kex.git
+	branch = master
+
+[submodule "apps/kali-nethunter-store-client"]
+	path = apps/kali-nethunter-store-client
+	url = https://gitlab.com/kalilinux/nethunter/apps/kali-nethunter-store-client.git
+	branch = master
+
+[submodule "core/installer"]
+	path = core/installer
+	url = https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-installer.git
+	branch = master
+
+[submodule "core/arm-rootfs"]
+	path = core/arm-rootfs
+	url = https://gitlab.com/kalilinux/build-scripts/kali-arm.git
+	branch = master
+
+[submodule "devices/kernel-tree"]
+	path = devices/kernel-tree
+	url = https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project.git
+	branch = master

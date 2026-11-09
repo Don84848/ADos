@@ -1,0 +1,120 @@
+{
+  "version": "1.0.0",
+  "name": "ADos Device Hardware Configurations",
+  "description": "Hardware and kernel profile definitions for ADos mobile cybersecurity builds",
+  "devices": {
+    "generic_arm64": {
+      "model_name": "Generic ARM64 Android Device",
+      "brand": "Generic",
+      "arch": "arm64",
+      "supported_releases": ["9", "10", "11", "12", "13", "14"],
+      "kernel_source": "upstream_generic",
+      "anykernel": true,
+      "ramdisk_patch": "standard",
+      "debloat_profile": "standard_aosp",
+      "notes": "Compatible with most Treble (GSI) and ARM64 rooted Android phones"
+    },
+    "generic_armhf": {
+      "model_name": "Generic 32-bit ARM Android Device",
+      "brand": "Generic",
+      "arch": "armhf",
+      "supported_releases": ["7", "8", "9", "10"],
+      "kernel_source": "upstream_generic",
+      "anykernel": true,
+      "ramdisk_patch": "standard",
+      "debloat_profile": "standard_aosp",
+      "notes": "For legacy 32-bit Android smartphones"
+    },
+    "samsung_s9": {
+      "model_name": "Samsung Galaxy S9 / S9+ (Exynos 9810 / Snapdragon 845)",
+      "brand": "Samsung",
+      "arch": "arm64",
+      "codename": "starlte/star2lte",
+      "supported_releases": ["8", "9", "10"],
+      "anykernel": true,
+      "ramdisk_patch": "samsung_exynos_oneui",
+      "debloat_profile": "samsung_oneui_aggressive",
+      "knox_mitigation": true,
+      "usb_gadget_driver": "configfs",
+      "notes": "Requires TWRP, Magisk, and disabled KnoxGuard/VaultKeeper"
+    },
+    "samsung_s10": {
+      "model_name": "Samsung Galaxy S10 / S10e / S10+ (Exynos 9820 / Snapdragon 855)",
+      "brand": "Samsung",
+      "arch": "arm64",
+      "codename": "beyond1lte/beyond2lte/beyond0lte",
+      "supported_releases": ["9", "10", "11", "12"],
+      "anykernel": true,
+      "ramdisk_patch": "samsung_exynos_oneui",
+      "debloat_profile": "samsung_oneui_aggressive",
+      "knox_mitigation": true,
+      "usb_gadget_driver": "configfs",
+      "notes": "SAR (System-as-Root) device; requires Magisk recovery boot mechanism"
+    },
+    "samsung_s20": {
+      "model_name": "Samsung Galaxy S20 / S20+ / S20 Ultra (Exynos 990 / Snapdragon 865)",
+      "brand": "Samsung",
+      "arch": "arm64",
+      "codename": "hub1/hub2/hub3",
+      "supported_releases": ["10", "11", "12", "13"],
+      "anykernel": true,
+      "ramdisk_patch": "samsung_exynos_oneui",
+      "debloat_profile": "samsung_oneui_aggressive",
+      "knox_mitigation": true,
+      "usb_gadget_driver": "configfs",
+      "notes": "Dynamic partition layout; use Odin + patched vbmeta.img"
+    },
+    "samsung_note9": {
+      "model_name": "Samsung Galaxy Note 9 (Exynos 9810 / Snapdragon 845)",
+      "brand": "Samsung",
+      "arch": "arm64",
+      "codename": "crownlte",
+      "supported_releases": ["8", "9", "10"],
+      "anykernel": true,
+      "ramdisk_patch": "samsung_exynos_oneui",
+      "debloat_profile": "samsung_oneui_aggressive",
+      "knox_mitigation": true,
+      "usb_gadget_driver": "configfs",
+      "notes": "Stylus support preserved while optimizing RAM"
+    },
+    "samsung_note10": {
+      "model_name": "Samsung Galaxy Note 10 / Note 10+ (Exynos 9825 / Snapdragon 855)",
+      "brand": "Samsung",
+      "arch": "arm64",
+      "codename": "d1/d2s/d2x",
+      "supported_releases": ["9", "10", "11", "12"],
+      "anykernel": true,
+      "ramdisk_patch": "samsung_exynos_oneui",
+      "debloat_profile": "samsung_oneui_aggressive",
+      "knox_mitigation": true,
+      "usb_gadget_driver": "configfs",
+      "notes": "SAR; disable VaultKeeper and defex security daemon in kernel"
+    },
+    "samsung_a50": {
+      "model_name": "Samsung Galaxy A50 (Exynos 9610)",
+      "brand": "Samsung",
+      "arch": "arm64",
+      "codename": "a50",
+      "supported_releases": ["9", "10", "11"],
+      "anykernel": true,
+      "ramdisk_patch": "samsung_exynos_oneui",
+      "debloat_profile": "samsung_oneui_aggressive",
+      "knox_mitigation": true,
+      "usb_gadget_driver": "configfs",
+      "notes": "Mid-range workhorse; debloating provides 45% RAM reduction"
+    },
+    "samsung_a52": {
+      "model_name": "Samsung Galaxy A52 / A52s 5G (Snapdragon 720G / 778G)",
+      "brand": "Samsung",
+      "arch": "arm64",
+      "codename": "a52q/a52sxq",
+      "supported_releases": ["11", "12", "13", "14"],
+      "anykernel": true,
+      "ramdisk_patch": "samsung_snapdragon_oneui",
+      "debloat_profile": "samsung_oneui_aggressive",
+      "knox_mitigation": true,
+      "usb_gadget_driver": "configfs",
+      "notes": "Dynamic partition layout; external Wi-Fi via USB OTG works out-of-the-box"
+    }
+  }
+}
