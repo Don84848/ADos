@@ -203,6 +203,36 @@ ADos includes DuckHunter, allowing your phone to act as an automated USB Rubber 
 
 ---
 
+## 🎯 Step 8: Launching the Mobile Dashboard & Installing More Tools
+
+To easily run tools on your touchscreen without typing complex commands, open **NetHunter Terminal** and type:
+```bash
+ados-menu
+```
+
+This opens the interactive menu allowing one-tap launching of:
+- **Nmap Network Scans**
+- **Wifite & Aircrack Wi-Fi Audits**
+- **Bettercap & Responder MITM Attacks**
+- **SQLMap Web Vulnerability Scans**
+- **BadUSB Payloads**
+- **Metasploit Console**
+
+### Installing Additional Toolsets On Demand:
+To install more specialized tools directly inside the Kali Chroot:
+```bash
+# Install wireless hacking tools (Wifite, Aircrack, Kismet, Mdk4)
+bash /data/ados/scripts/install-tools.sh wireless
+
+# Install web app hacking tools (SQLMap, Gobuster, Nikto, WPScan, FFuF)
+bash /data/ados/scripts/install-tools.sh web
+
+# Install full Red Team offensive arsenal
+bash /data/ados/scripts/install-tools.sh redteam
+```
+
+---
+
 ## 🔧 Troubleshooting
 
 - **SELinux Enforcing Issues:** If the chroot fails to execute or external modules fail to load, open terminal and run `su -c setenforce 0`.

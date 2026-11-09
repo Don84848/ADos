@@ -63,6 +63,12 @@ Examples:
         help="Kali NetHunter Rootfs size: nano (~200MB), minimal (~700MB, default), full (~1.8GB)"
     )
     parser.add_argument(
+        "--tools",
+        choices=["essential", "wireless", "web", "redteam", "full"],
+        default="essential",
+        help="Hacking tools arsenal profile: essential, wireless, web, redteam, full"
+    )
+    parser.add_argument(
         "-t", "--type",
         dest="pkg_type",
         choices=["twrp", "magisk"],
@@ -168,6 +174,7 @@ def main(args: List[str] = None):
     print(f"[*] Architecture   : {profile.get('arch', 'arm64')}")
     print(f"[*] Android Version: {opts.release}")
     print(f"[*] Rootfs Mode    : {opts.rootfs}")
+    print(f"[*] Hacking Arsenal: {opts.tools.upper()}")
     print(f"[*] Package Format : {opts.pkg_type.upper()}")
     
     is_samsung = profile.get("brand") == "Samsung"
@@ -206,6 +213,24 @@ def main(args: List[str] = None):
         with open(gadget_script_path, "r", encoding="utf-8") as f:
             staging["data/ados/scripts/setup-usb-gadget.sh"] = f.read()
 
+    # Include Hacking Tools Installer & Mobile Menu
+    tools_script_path = os.path.join(REPO_ROOT, "scripts", "install-tools.sh")
+    if os.path.exists(tools_script_path):
+        with open(tools_script_path, "r", encoding="utf-8") as f:
+            staging["data/ados/scripts/install-tools.sh"] = f.read()
+
+    menu_script_path = os.path.join(REPO_ROOT, "scripts", "ados-menu.sh")
+    if os.path.exists(menu_script_path):
+        with open(menu_script_path, "r", encoding="utf-8") as f:
+            content = f.read()
+            staging["data/ados/scripts/ados-menu.sh"] = content
+            staging["system/bin/ados-menu"] = content
+
+    toolsets_config_path = os.path.join(REPO_ROOT, "config", "toolsets.json")
+    if os.path.exists(toolsets_config_path):
+        with open(toolsets_config_path, "r", encoding="utf-8") as f:
+            staging["data/ados/config/toolsets.json"] = f.read()
+
     # Determine Output Path
     out_dir = opts.output or os.path.join(REPO_ROOT, "output")
     if os.path.isdir(out_dir) or not out_dir.endswith(".zip"):
@@ -225,6 +250,7 @@ def main(args: List[str] = None):
         "arch": profile.get("arch", "arm64"),
         "type": opts.pkg_type,
         "rootfs": rootfs_info,
+        "tools_profile": opts.tools,
         "is_samsung": is_samsung,
         "debloated": opts.debloat_samsung or is_samsung
     }

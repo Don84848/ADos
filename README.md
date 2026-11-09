@@ -23,6 +23,7 @@ python3 build.py --device [phone_model] --release [os_version]
 - **Lightweight Mobile Performance:** Includes automated OneUI/Knox debloater scripts (`scripts/debloat-samsung.sh`) and nano/minimal chroot profiles that free up **>1.5 GB of RAM** and prevent thermal throttling while running intensive security tools (Nmap, Metasploit, Aircrack-ng).
 - **External Wi-Fi & Packet Injection:** Full support for external USB Wi-Fi dongles (Atheros AR9271, Realtek RTL8812AU, Ralink RT3070) via USB OTG.
 - **BadUSB & DuckHunter HID:** Execute automated keystroke injection payloads over USB directly from the phone.
+- **Curated Hacking Toolsets & Mobile Dashboard (`ados-menu`):** Instant access to Wi-Fi auditing (Aircrack/Wifite), MITM (Bettercap/Responder), Network Discovery (Nmap/Masscan), Web Exploitation (SQLMap/Gobuster), and Metasploit directly from a mobile-friendly touchscreen menu.
 - **Cross-Platform Containerized Builds:** Pre-configured `Dockerfile` and `docker-compose.yml` to build flashable packages on Windows, Linux, or macOS.
 
 ---
@@ -75,9 +76,43 @@ Supported device presets include:
 - `generic_armhf` (Generic 32-bit ARM devices)
 
 ### 3. Build Your Package
-Build a lightweight package for a Samsung Galaxy S10 running Android 11:
+Build a lightweight package for a Samsung Galaxy S10 with the Red Team hacking arsenal:
 ```bash
-python3 build.py --device samsung_s10 --release 11 --rootfs minimal --debloat-samsung
+python3 build.py --device samsung_s10 --release 11 --rootfs minimal --tools redteam --debloat-samsung
+```
+
+#### Available Toolset Profiles (`--tools`):
+- `essential`: Nmap, Masscan, Aircrack-ng, Wifite, Metasploit, SQLMap, Netcat (Default)
+- `wireless`: Full Wi-Fi arsenal (Aircrack, Wifite, Hcxdumptool, Mdk4, Reaver, Bully, Kismet)
+- `web`: Web penetration testing (SQLMap, Gobuster, FFuF, Nikto, WPScan, Commix, WhatWeb)
+- `redteam`: Full offensive suite (Network, Wi-Fi, MITM, Web, Metasploit, John, Hydra, Hashcat)
+- `full`: Complete Kali toolkit including Software Defined Radio (RTL-SDR, HackRF) and Bluetooth
+
+---
+
+## 📱 Mobile Interactive Pentest Dashboard (`ados-menu`)
+
+Inside the phone's terminal, simply type `ados-menu` to launch the touchscreen-friendly dashboard:
+
+```text
+    ___    ____            
+   /   |  / __ \____  _____
+  / /| | / / / / __ \/ ___/
+ / ___ |/ /_/ / /_/ (__  ) 
+/_/  |_/_____/\____/____/  
+======================================================
+  ADos - Mobile Cybersecurity Operating System
+  Interactive Offensive Security Dashboard
+======================================================
+ [1] Network Recon (Nmap & Host Discovery)
+ [2] Wi-Fi Auditing & Monitor Mode (Wifite & Aircrack)
+ [3] Man-in-the-Middle (Bettercap & Responder)
+ [4] Web Vulnerability Scanner (SQLMap & Gobuster)
+ [5] BadUSB & DuckHunter Payloads (/dev/hidg0)
+ [6] Metasploit Framework Console (msfconsole)
+ [7] NetHunter KeX (Graphical Desktop)
+ [8] Install / Update Hacking Toolsets
+ [0] Exit to Shell
 ```
 
 Or for a generic ARM64 phone running Android 13:

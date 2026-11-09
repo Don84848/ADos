@@ -1,0 +1,114 @@
+{
+  "version": "1.0.0",
+  "description": "ADos Curated Mobile Cybersecurity & Penetration Testing Toolsets",
+  "toolsets": {
+    "network": {
+      "name": "Network Reconnaissance & Discovery",
+      "packages": [
+        "nmap",
+        "masscan",
+        "zmap",
+        "netdiscover",
+        "arp-scan",
+        "hping3",
+        "traceroute",
+        "fping",
+        "dnsutils",
+        "whois"
+      ]
+    },
+    "wireless": {
+      "name": "Wireless (Wi-Fi) Security Auditing",
+      "packages": [
+        "aircrack-ng",
+        "wifite",
+        "hcxdumptool",
+        "hcxtools",
+        "mdk4",
+        "pixiewps",
+        "reaver",
+        "bully",
+        "macchanger",
+        "kismet",
+        "iw",
+        "wireless-tools"
+      ]
+    },
+    "mitm": {
+      "name": "Man-in-the-Middle (MITM) & Traffic Sniffing",
+      "packages": [
+        "bettercap",
+        "responder",
+        "mitmproxy",
+        "ettercap-text-only",
+        "tcpdump",
+        "dsniff",
+        "tshark",
+        "sslstrip"
+      ]
+    },
+    "web": {
+      "name": "Web Application Penetration Testing",
+      "packages": [
+        "sqlmap",
+        "gobuster",
+        "ffuf",
+        "nikto",
+        "wpscan",
+        "dirb",
+        "commix",
+        "whatweb"
+      ]
+    },
+    "exploitation": {
+      "name": "Exploitation & Post-Exploitation",
+      "packages": [
+        "metasploit-framework",
+        "exploitdb",
+        "msfpc",
+        "netcat-traditional",
+        "socat",
+        "powersploit"
+      ]
+    },
+    "passwords": {
+      "name": "Password Auditing & Hash Cracking",
+      "packages": [
+        "john",
+        "hydra",
+        "medusa",
+        "hashcat",
+        "crowbar",
+        "wordlists",
+        "crunch"
+      ]
+    },
+    "bluetooth_rf": {
+      "name": "Bluetooth & RF / SDR Analysis",
+      "packages": [
+        "bluez",
+        "btscanner",
+        "spooftooph",
+        "rfcat",
+        "rtl-sdr",
+        "hackrf"
+      ]
+    },
+    "social_engineering": {
+      "name": "Social Engineering & BadUSB",
+      "packages": [
+        "set",
+        "curl",
+        "wget",
+        "python3-pip"
+      ]
+    }
+  },
+  "profiles": {
+    "essential": ["network", "wireless", "exploitation"],
+    "wireless": ["wireless", "network"],
+    "web": ["web", "network", "mitm"],
+    "redteam": ["network", "wireless", "mitm", "web", "exploitation", "passwords", "social_engineering"],
+    "full": ["network", "wireless", "mitm", "web", "exploitation", "passwords", "bluetooth_rf", "social_engineering"]
+  }
+}
